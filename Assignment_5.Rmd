@@ -1,5 +1,5 @@
 ---
-title: "PUBPOL 543: Assignment_2"
+title: "PUBPOL 543: Assignment_5"
 output: html_document
 author: Evan Lih
 ---
@@ -58,6 +58,11 @@ final_mergedData$arableLand_cut=cut(final_mergedData$`arable_Land(%)`,
                           breaks = c(0,3.7,13,18),
                           labels = c("less3","3.7-13","more13"))
 
+ggplot(final_mergedData, aes(`arable_Land(%)`, `renewable_Consumption(%)`)) +
+   geom_smooth(lm = "") +
+   theme_minimal() +
+   labs(xlab = "Arable Land (%)", ylab = "Energy from renewables (%)") +
+   ggtitle("Arable land vs Renewable Energy Consumption") 
 
 ```
 
