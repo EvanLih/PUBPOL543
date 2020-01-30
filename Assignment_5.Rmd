@@ -1,0 +1,63 @@
+---
+title: "PUBPOL 543: Assignment_2"
+output: html_document
+author: Evan Lih
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## We are seeking to compare three primary variables by country: Access to Renewable Energy, Arable Land, and Consumption of renewable energy. 
+
+```{r dataframe, include = TRUE}
+
+library(tidyverse)
+library(magrittr)
+access_Renewable <- read.csv("access_Renewable.csv", check.names = FALSE)
+renewable_consumption <- read.csv("renewable_Consumption.csv",  check.names = FALSE)
+arable_Land <- read.csv("Arable_Land.csv",  check.names = FALSE)
+
+ access_Renewable %<>%
+  select("Country Name", `1990`:`2005`) %>%
+    gather(`1990`:`2005`, key = "Year", value = "access_Renewable(%)")
+ 
+ renewable_consumption %<>%
+   select("Country Name", `1990`:`2005`) %>%
+   gather(`1990`:`2005`, key = "Year", value = "renewable_Consumption(%)")
+ 
+ arable_Land %<>%
+   select("Country Name", `1990`:`2005`) %>%
+   gather(`1990`:`2005`, key = "Year", value = "arable_Land(%)")
+ 
+ merged_data <- full_join(access_Renewable, arable_Land, by = "Country Name")
+ 
+ final_mergedData <- left_join(merged_data, renewable_consumption, by = "Country Name")
+ 
+ str(final_mergedData)
+ colnames(final_mergedData)
+ head(final_mergedData)
+```
+
+```{r, include = TRUE}
+final_mergedData <- select(final_mergedData,-c("Year.y","Year.x"))
+
+summary(final_mergedData$`arable_Land(%)`)
+summary(final_mergedData$`access_Renewable(%)`)
+summary(final_mergedData$`renewable_Consumption(%)`)
+
+final_mergedData$renewableCut=cut(final_mergedData$`renewable_Consumption(%)`,
+                          breaks = c(4,21,56,100),
+                          labels = c("less4","21-56","more56"))
+
+final_mergedData$access_RenewableCut=cut(final_mergedData$`access_Renewable(%)`,
+                          breaks = c(0,65,97,100),
+                          labels = c("less65","65-97","more97"))
+
+final_mergedData$arableLand_cut=cut(final_mergedData$`arable_Land(%)`,
+                          breaks = c(0,3.7,13,18),
+                          labels = c("less3","3.7-13","more13"))
+
+
+```
+

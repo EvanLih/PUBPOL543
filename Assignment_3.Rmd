@@ -1,0 +1,121 @@
+---
+title: "Assignment_3"
+output: html_document
+author: Evan Lih
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+link='https://github.com/UWDataScience2020/data/raw/master/eduwa.rda'
+load(file=url(link))
+names(eduwa)
+```
+```{r test}
+absoluteT=table(eduwa$LocaleType,exclude = 'nothing')
+ToPlot=prop.table(absoluteT)*100
+names(ToPlot)[5]='Unknown'
+tableFreq=as.data.frame(ToPlot)
+names(tableFreq)=c("locale","pct")
+tableFreq=tableFreq[order(tableFreq$pct),]
+localesOrd=tableFreq[order(tableFreq$pct),'locale']
+tableFreq$gap=tableFreq$pct-25
+tableFreq$PositiveGap=ifelse(tableFreq$gap>0,T,F)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r plots, echo  = FALSE}
+library(ggplot2)
+base = ggplot(tableFreq, aes(x=locale,y=gap)) 
+base = base + theme_classic()
+base = base + scale_x_discrete(limits=localesOrd)
+lolliplot1=base + geom_segment(aes(y = 0, yend = gap, 
+                                   x = locale, xend = locale), 
+                               color = "gray") 
+lolliplot2 = lolliplot1 + geom_point()
+tableFreq$PositiveGap=ifelse(tableFreq$gap>0,T,F)
+base = ggplot(tableFreq, aes(x=locale,y=gap,
+                              color=PositiveGap)) 
+base = base + theme_classic()
+base= base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0, yend = gap, 
+                                   x = locale, xend = locale), 
+                               color = "gray") 
+ 
+lolliplot2 = lolliplot1 + geom_point()
+
+
+base = ggplot(tableFreq, aes(x=locale,y=gap,
+                             color=PositiveGap,
+                             label = round(gap,3))) 
+
+base = base + theme_classic()
+base= base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0, yend = gap, 
+                                   x = locale, xend = locale), 
+                               color = "gray") 
+
+lolliplot2=lolliplot1 + geom_point() 
+
+
+lolliplot3 = lolliplot2 + geom_text(nudge_x=0.3,show.legend = FALSE) 
+
+
+ 
+lolliplot4 = lolliplot3 + geom_hline(yintercept = 0)
+
+lolliplot5 = lolliplot4 + theme(axis.ticks.y = element_blank(),
+                                axis.title.y = element_blank(),
+                                axis.line.y = element_blank(),
+                                axis.text.y = element_blank())
+
+lolliplot6=lolliplot5 + theme(axis.ticks.x = element_blank(),
+                                axis.title.x = element_blank(),
+                                axis.line.x = element_blank(),
+                              axis.text.x = element_blank()
+                              )
+
+lolliplot7= lolliplot6 + theme(legend.position = c(0.8,0.4))
+
+```
+
+```{r}
+lolliplot7 + ggtitle("Education Gap by Type of Location") +
+    theme_minimal() +
+        theme(axis.text.x = element_text(),
+              legend.position = "bottom", 
+              axis.title.y = element_text(angle = 90),
+              axis.title.x = element_text()) +
+  ylab("Percent Difference") +
+  xlab("Location") +
+  geom_point(color = "#003ba0") +
+  coord_flip()
+```
+
+```{r plots2, echo = TRUE}
+box1 = ggplot(eduwa, aes(y=as.numeric(High.Grade)))
+box1 = box1 + geom_boxplot() + coord_flip() 
+# to show it horizontally
+
+# the labels use the original ordinal levels
+ordLabels= levels(eduwa$High.Grade)
+positions= as.integer(summary(as.numeric(eduwa$High.Grade)))
+positions
+box2 = box1 + scale_y_continuous(labels=ordLabels,breaks=1:15)
+pos_q1=     ggplot_build(box2)$data[[1]]$lower
+pos_median= ggplot_build(box2)$data[[1]]$middle
+pos_q3=     ggplot_build(box2)$data[[1]]$upper
+levels(eduwa$High.Grade)[c(positions[2],positions[3],positions[5])]
+levels(eduwa$High.Grade)[c(pos_q1,pos_median,pos_q3)]
+
+testLabels = c(5,8,12)
+box2 = box1 + scale_y_continuous(labels=testLabels,breaks=c(7,10,14))
+box2
+
+
+```
+
