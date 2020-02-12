@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## We are seeking to compare three primary variables by country: Access to Renewable Energy, Arable Land, and Consumption of renewable energy. 
 
 ```{r dataframe, include = TRUE}
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
 
 library(tidyverse)
 library(magrittr)
@@ -27,16 +29,31 @@ arable_Land <- read.csv("Arable_Land.csv",  check.names = FALSE)
    gather(`1990`:`2005`, key = "Year", value = "renewable_Consumption(%)")
  
  arable_Land %<>%
-   select("Country Name", `1990`:`2005`) %>%
-   gather(`1990`:`2005`, key = "Year", value = "arable_Land(%)")
+   select("Country Name", `1990`:`2015`) %>%
+   gather(`1990`:`2015`, key = "Year", value = "arable_Land(%)")
  
- merged_data <- full_join(access_Renewable, arable_Land, by = "Country Name")
+ merged_data <- left_join(access_Renewable, arable_Land, by = "Country Name")
  
  final_mergedData <- left_join(merged_data, renewable_consumption, by = "Country Name")
  
- str(final_mergedData)
- colnames(final_mergedData)
- head(final_mergedData)
+ final_mergedData %<>% subset(Year.y == 2015)
+ 
+ ####only keeping year 2005
+ 
+ access_Renewable %<>% select("Country Name", `2005`) %>% 
+    rename("accesstoRenewable" = `2005`)
+ 
+renewable_consumption %<>% select("Country Name", `2005`) %>% 
+    rename("renewableConsumption" = `2005`)
+ 
+ arable_Land %<>% select("Country Name", `2005`) %>% 
+    rename("arableLand" = `2005`) 
+ 
+  merged_data <- left_join(access_Renewable, arable_Land, by = "Country Name")
+ 
+ final_mergedData <- left_join(merged_data, renewable_consumption, by = "Country Name")
+ 
+ write.csv(final_mergedData, "Evans Data.csv")
 ```
 
 ```{r, include = TRUE}
@@ -57,6 +74,9 @@ final_mergedData$access_RenewableCut=cut(final_mergedData$`access_Renewable(%)`,
 final_mergedData$arableLand_cut=cut(final_mergedData$`arable_Land(%)`,
                           breaks = c(0,3.7,13,18),
                           labels = c("less3","3.7-13","more13"))
+
+write.csv(final_mergedData, "table_car.csv")
+
 
 ggplot(final_mergedData, aes(`arable_Land(%)`, `renewable_Consumption(%)`)) +
    geom_smooth(lm = "") +
