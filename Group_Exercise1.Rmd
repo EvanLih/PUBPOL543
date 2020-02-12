@@ -1,3 +1,14 @@
+---
+title: "Group_Exercise1"
+output: html_document
+author: Evan Lih, Elsie Liu (Liu Liu), Sabrina Santos, Bingyao Zou
+---
+
+```{r setup, include=TRUE, fig.width=15,fig.height=5}
+library(magrittr)
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
 final_data <- read.csv("Final Data - Sheet1.csv")
 
 data <- table(final_data$Continent, final_data$Income.Group)
@@ -8,7 +19,7 @@ data_mgCol %<>% as.data.frame() %>%
   rename("Country"= Var1) %>%
   rename("incomeStatus" = Var2)
 
-ggplot(data_mgCol, aes(Country, Freq)) +
+plot <- ggplot(data_mgCol, aes(Country, Freq)) +
   geom_bar(stat = "Identity", fill=  "#3CA3B2") +
   facet_grid(~ incomeStatus) +
   coord_flip() +
@@ -17,3 +28,7 @@ ggplot(data_mgCol, aes(Country, Freq)) +
   ggtitle("Income Distribution by Continent") +
   xlab("Continent") +
   ylab("Frequency")
+
+plot
+```
+
