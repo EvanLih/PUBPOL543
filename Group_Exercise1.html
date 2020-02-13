@@ -390,7 +390,33 @@ data_mgCol %&lt;&gt;% as.data.frame() %&gt;%
   rename(&quot;Country&quot;= Var1) %&gt;%
   rename(&quot;incomeStatus&quot; = Var2)
 
-plot &lt;- ggplot(data_mgCol, aes(Country, Freq)) +
+data_mgCol</code></pre>
+<pre><code>##          Country        incomeStatus       Freq
+## 1         Africa         High income 0.01960784
+## 2           Asia         High income 0.23529412
+## 3         Europe         High income 0.52941176
+## 4  North America         High income 0.13725490
+## 5        Oceania         High income 0.03921569
+## 6  South America         High income 0.03921569
+## 7         Africa          Low income 0.76923077
+## 8           Asia          Low income 0.19230769
+## 9         Europe          Low income 0.00000000
+## 10 North America          Low income 0.03846154
+## 11       Oceania          Low income 0.00000000
+## 12 South America          Low income 0.00000000
+## 13        Africa Lower middle income 0.44736842
+## 14          Asia Lower middle income 0.34210526
+## 15        Europe Lower middle income 0.05263158
+## 16 North America Lower middle income 0.07894737
+## 17       Oceania Lower middle income 0.05263158
+## 18 South America Lower middle income 0.02631579
+## 19        Africa Upper middle income 0.15555556
+## 20          Asia Upper middle income 0.33333333
+## 21        Europe Upper middle income 0.13333333
+## 22 North America Upper middle income 0.15555556
+## 23       Oceania Upper middle income 0.04444444
+## 24 South America Upper middle income 0.17777778</code></pre>
+<pre class="r"><code>plot &lt;- ggplot(data_mgCol, aes(Country, Freq)) +
   geom_bar(stat = &quot;Identity&quot;, fill=  &quot;#3CA3B2&quot;) +
   facet_grid(~ incomeStatus) +
   coord_flip() +

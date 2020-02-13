@@ -19,6 +19,8 @@ data_mgCol %<>% as.data.frame() %>%
   rename("Country"= Var1) %>%
   rename("incomeStatus" = Var2)
 
+data_mgCol
+
 plot <- ggplot(data_mgCol, aes(Country, Freq)) +
   geom_bar(stat = "Identity", fill=  "#3CA3B2") +
   facet_grid(~ incomeStatus) +
